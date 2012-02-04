@@ -88,9 +88,15 @@ private
     end
 
     def apply_format_to_columns(row, formats)
-      formats.each do |column_name, format|
-        i = @columns.index column_name
-        row.set_format(i, Spreadsheet::Format.new(format)) if i and format
+      formats.each do |column_names, format|
+        next unless format
+	# column_names can be an array or a simgle name. Since an array is needed
+        # to process the formats, the single name is converted into an array
+        column_names = column_names.is_a?(Array) ? column_names : [column_names]
+	column_names.each do |column_name|
+          i = @columns.index column_name
+          row.set_format(i, Spreadsheet::Format.new(format)) if i
+	end
       end
     end
 

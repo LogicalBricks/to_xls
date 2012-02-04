@@ -162,13 +162,24 @@ describe ToXls::Writer do
     it "accepts the format options" do
       cell_format = {:color => :blue} 
       header_format = {:weight => :bold, :color => :red}
-      column_format = {:age => {:number_format => '0.00'}}
+      xls = make_book( mock_users,
+        :cell_format => cell_format,
+        :header_format => header_format
+      )
+      check_format( xls.worksheets.first, header_format, cell_format )
+    end
+
+    it "accepts the format options with column format" do
+      cell_format = {:color => :blue} 
+      header_format = {:weight => :bold, :color => :red}
+      column_format = {:age => {:number_format => '0.00'}, 
+	      [:email, :name] => {:rotation => 90}}
       writer = make_writer( mock_users,
         :cell_format => cell_format,
         :header_format => header_format,
 	:column_format => column_format
       )
-      check_format(writer, header_format, cell_format, column_format)
+      check_format_with_column_options(writer, header_format, cell_format, column_format)
     end
   end
 end
