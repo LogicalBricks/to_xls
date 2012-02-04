@@ -40,15 +40,35 @@ def make_book(array, options={})
   book
 end
 
-def check_format(sheet, header_format, cell_format)
+def make_writer(array, options={})
+  ToXls::Writer.new(array, options)
+end
+
+def check_format(writer, header_format, cell_format, column_format)
+  book = Spreadsheet::Workbook.new
+  writer.write_book(book)
+  sheet = book.worksheets.first
   sheet.rows.each_with_index do |row, i|
-    hash = i == 0 ? header_format : cell_format
-    compare_hash_format(hash, row.default_format)
+    if i == 0
+      compare_hash_format(header_format, row.default_format)
+    else
+      compare_hash_format(cell_format, row.default_format)
+      column_format.each do |column_name, hash|
+        column_number = writer.columns.index column_name
+        compare_hash_format_base(hash, row.formats[column_number])
+      end
+    end
   end
 end
 
 def compare_hash_format(hash, format)
   hash.each do |key, value| 
     format.font.send(key).should == value
+  end
+end
+
+def compare_hash_format_base(hash, format)
+  hash.each do |key, value| 
+    format.send(key).should == value
   end
 end
