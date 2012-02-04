@@ -44,7 +44,14 @@ def make_writer(array, options={})
   ToXls::Writer.new(array, options)
 end
 
-def check_format(writer, header_format, cell_format, column_format)
+def check_format(sheet, header_format, cell_format)
+  sheet.rows.each_with_index do |row, i|
+    hash = i == 0 ? header_format : cell_format
+    compare_hash_format(hash, row.default_format)
+  end
+end
+
+def check_format_with_column_options(writer, header_format, cell_format, column_format)
   book = Spreadsheet::Workbook.new
   writer.write_book(book)
   sheet = book.worksheets.first
@@ -53,9 +60,12 @@ def check_format(writer, header_format, cell_format, column_format)
       compare_hash_format(header_format, row.default_format)
     else
       compare_hash_format(cell_format, row.default_format)
-      column_format.each do |column_name, hash|
-        column_number = writer.columns.index column_name
-        compare_hash_format_base(hash, row.formats[column_number])
+      column_format.each do |column_names, hash|
+        column_names = column_names.is_a?(Array) ? column_names : [column_names]
+	column_names.each do |column_name|
+          column_number = writer.columns.index column_name
+          compare_hash_format_base(hash, row.formats[column_number]) if column_number
+	end
       end
     end
   end
