@@ -10,6 +10,7 @@ module ToXls
       @options = options
       @cell_format = create_format :cell_format
       @header_format = create_format :header_format
+      @column_format = (@options.delete :column_format) || {}
     end
 
     def write_string(string = '')
@@ -41,9 +42,10 @@ module ToXls
           row_index = 1
         end
 
-        @array.each do |model|
+        @array.each_with_index do |model, i|
           row = sheet.row(row_index)
           apply_format_to_row(row, @cell_format)
+          apply_format_to_columns(row, @column_format)
           fill_row(row, columns, model)
           row_index += 1
         end
@@ -83,6 +85,13 @@ private
 
     def apply_format_to_row(row, format)
       row.default_format = format if format
+    end
+
+    def apply_format_to_columns(row, formats)
+      formats.each do |column_name, format|
+        i = @columns.index column_name
+        row.set_format(i, Spreadsheet::Format.new(format)) if i and format
+      end
     end
 
     def create_format(name)
