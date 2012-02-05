@@ -173,7 +173,7 @@ describe ToXls::Writer do
       cell_format = {:color => :blue} 
       header_format = {:weight => :bold, :color => :red}
       column_format = {:age => {:number_format => '0.00'}, 
-	      [:email, :name] => {:rotation => 90}}
+	      [:email, :name, :other] => {:rotation => 90}}
       writer = make_writer( mock_users,
         :cell_format => cell_format,
         :header_format => header_format,
