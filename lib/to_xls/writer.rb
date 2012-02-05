@@ -11,6 +11,7 @@ module ToXls
       @cell_format = create_format :cell_format
       @header_format = create_format :header_format
       @column_format = (@options.delete :column_format) || {}
+      @column_width = (@options.delete :column_width) || {}
     end
 
     def write_string(string = '')
@@ -54,7 +55,14 @@ module ToXls
           next unless column_names
           column_names = [column_names] unless column_names.is_a?(Array)
           column_numbers = column_names.map{ |c| columns.index(c) }.compact
-	  column_numbers.each{ |column_number| apply_format_to_columns(sheet.column(column_number), options) }
+          column_numbers.each{ |column_number| apply_format_to_columns(sheet.column(column_number), options) }
+        end
+
+        @column_width.each_pair do |column_names, width|
+          next unless column_names
+          column_names = [column_names] unless column_names.is_a?(Array)
+          column_numbers = column_names.map{ |c| columns.index(c) }.compact
+          column_numbers.each{ |column_number| apply_width_to_columns(sheet.column(column_number), width) }
         end
       end
     end
@@ -68,9 +76,9 @@ module ToXls
 
     def can_get_columns_from_first_element?
       @array.first &&
-      @array.first.respond_to?(:attributes) &&
-      @array.first.attributes.respond_to?(:keys) &&
-      @array.first.attributes.keys.is_a?(Array)
+        @array.first.respond_to?(:attributes) &&
+        @array.first.attributes.respond_to?(:keys) &&
+        @array.first.attributes.keys.is_a?(Array)
     end
 
     def get_columns_from_first_element
@@ -78,7 +86,7 @@ module ToXls
     end
 
     def headers
-      return  @headers if @headers
+      return @headers if @headers
       @headers = @options[:headers] || columns
       raise ArgumentError, ":headers (#{@headers.inspect}) must be an array" unless @headers.is_a? Array
       @headers
@@ -88,7 +96,7 @@ module ToXls
       @options[:headers] != false
     end
 
-private
+    private
 
     def apply_format_to_row(row, format)
       row.default_format = format if format
@@ -96,6 +104,10 @@ private
 
     def apply_format_to_columns(column, hash)
       column.default_format = Spreadsheet::Format.new(hash) if hash
+    end
+
+    def apply_width_to_columns(column, width)
+      column.width = width if width
     end
 
     def create_format(name)

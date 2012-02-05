@@ -177,9 +177,22 @@ describe ToXls::Writer do
       writer = make_writer( mock_users,
         :cell_format => cell_format,
         :header_format => header_format,
-	:column_format => column_format
+        :column_format => column_format
       )
       check_format_with_column_options(writer, header_format, cell_format, column_format)
+    end
+
+    it "accepts the format options with column width" do
+      cell_format = {:color => :blue} 
+      header_format = {:weight => :bold, :color => :red}
+      column_width = {:age => 4, 
+	      [:email, :name, :other] => 20}
+      writer = make_writer( mock_users,
+        :cell_format => cell_format,
+        :header_format => header_format,
+        :column_width => column_width
+      )
+      check_format_with_column_width(writer, header_format, cell_format, column_width)
     end
   end
 end
