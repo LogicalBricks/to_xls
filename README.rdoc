@@ -19,9 +19,9 @@ It is (very slightly) oriented towards exporting ActiveRecord sets, but it can b
 
 This gem includes a simplified way to change the format of the cells. Also this gem provides a simplified way for changing the format of the headers.
 
-To change the format of the cells and headers the code should be like this:
+To change the format of the cells, headers and columns the code should be like this:
 
-      User.all.to_xls :cell_format => {:color => :blue}, :header_format => {:weight => :bold, :color => :red}
+      User.all.to_xls :cell_format => {:color => :blue}, :header_format => {:weight => :bold, :color => :red}, :column_format => {[:created_at, :updated_at] => {:number_format => 'DD/MM/YYYY'}}, :column_width => {[:created_at, :updated_at] => 12}
 
 To have a full list of the format admited for the cells and headers you may have a look {on the source code of spreadsheet gem}[http://scm.ywesee.com/?p=spreadsheet/.git;a=blob;f=lib/spreadsheet/format.rb;h=ceef6bb6618238d1ff5cc0462826e2c127c272f1;hb=HEAD]. This gem runs under to_xls, so the format supported by this gem are the ones of spreadsheet.
 
@@ -52,22 +52,11 @@ On rails, you might want to modify config/initializers/mime_types.rb and registe
 
 * spreadsheet gem (automatically included if you require to_xls)
 
-== Installing on rails 2.x
-
-Include next gems in your environment.rb config file:
-
-    config.gem 'to_xls'
-
-Then execute
-
-    rake gems:install
-
-
 == Installing on rails 3.x
 
 In your Gemfile
 
-    gem 'to_xls'
+    gem 'to_xls', :git => 'git@github.com:LogicalBricks/to_xls.git'
 
 Then execute
 
