@@ -55,18 +55,15 @@ def check_format_with_column_options(writer, header_format, cell_format, column_
   book = Spreadsheet::Workbook.new
   writer.write_book(book)
   sheet = book.worksheets.first
-  sheet.rows.each_with_index do |row, i|
-    if i == 0
-      compare_hash_format(header_format, row.default_format)
-    else
-      compare_hash_format(cell_format, row.default_format)
-      column_format.each do |column_names, hash|
-        column_names = column_names.is_a?(Array) ? column_names : [column_names]
-	column_names.each do |column_name|
-          column_number = writer.columns.index column_name
-          compare_hash_format_base(hash, row.formats[column_number]) if column_number
-	end
-      end
+  check_format sheet, header_format, cell_format
+
+  column_format.each do |column_names, hash|
+    next unless column_names
+    column_names = column_names.is_a?(Array) ? column_names : [column_names]
+    column_names.each do |column_name|
+      next unless column_number = writer.columns.index(column_name)
+      column = sheet.columns[column_number]
+      compare_hash_format_column(hash, column.default_format)
     end
   end
 end
@@ -77,7 +74,7 @@ def compare_hash_format(hash, format)
   end
 end
 
-def compare_hash_format_base(hash, format)
+def compare_hash_format_column(hash, format)
   hash.each do |key, value| 
     format.send(key).should == value
   end

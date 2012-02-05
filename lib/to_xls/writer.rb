@@ -35,6 +35,7 @@ module ToXls
     def write_sheet(sheet)
       if columns.any?
         row_index = 0
+        column_index = 0
 
         if headers_should_be_included?
           apply_format_to_row(sheet.row(0), @header_format)
@@ -42,12 +43,18 @@ module ToXls
           row_index = 1
         end
 
-        @array.each_with_index do |model, i|
+        @array.each do |model|
           row = sheet.row(row_index)
           apply_format_to_row(row, @cell_format)
-          apply_format_to_columns(row, @column_format)
           fill_row(row, columns, model)
           row_index += 1
+        end
+
+        @column_format.each_pair do |column_names, options|
+          next unless column_names
+          column_names = [column_names] unless column_names.is_a?(Array)
+          column_numbers = column_names.map{ |c| columns.index(c) }.compact
+	  column_numbers.each{ |column_number| apply_format_to_columns(sheet.column(column_number), options) }
         end
       end
     end
@@ -87,17 +94,8 @@ private
       row.default_format = format if format
     end
 
-    def apply_format_to_columns(row, formats)
-      formats.each do |column_names, format|
-        next unless format
-	# column_names can be an array or a simgle name. Since an array is needed
-        # to process the formats, the single name is converted into an array
-        column_names = column_names.is_a?(Array) ? column_names : [column_names]
-	column_names.each do |column_name|
-          i = @columns.index column_name
-          row.set_format(i, Spreadsheet::Format.new(format)) if i
-	end
-      end
+    def apply_format_to_columns(column, hash)
+      column.default_format = Spreadsheet::Format.new(hash) if hash
     end
 
     def create_format(name)
