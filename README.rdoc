@@ -56,7 +56,7 @@ On rails, you might want to modify config/initializers/mime_types.rb and registe
 
 In your Gemfile
 
-    gem 'to_xls', :git => 'git@github.com:LogicalBricks/to_xls.git'
+    gem 'to_xls', :git => 'git://github.com/LogicalBricks/to_xls.git'
 
 Then execute
 
