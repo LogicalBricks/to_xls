@@ -3,12 +3,12 @@ $:.push File.expand_path("../lib", __FILE__)
 require "to_xls/version"
 
 Gem::Specification.new do |s|
-  s.name        = "to_xls"
-  s.version     = ToXls::VERSION
-  s.authors     = ["Enrique Garcia Cota", "Francisco de Juan", "Sergio Díaz Álvarez"]
-  s.email       = %q{egarcia@splendeo.es}
-  s.homepage    = "https://github.com/splendeo/to_xls"
-  s.summary     = %q{to_xls for Enumerations}
+  s.name = "to_xls"
+  s.version = ToXls::VERSION
+  s.authors = ["Enrique Garcia Cota", "Francisco de Juan", "Sergio Díaz Álvarez", 'Azarel Doroteo Pacheco']
+  s.email = %q{egarcia@splendeo.es, azarel.doroteo@logicalbricks.com}
+  s.homepage = "https://github.com/logicalbricks/to_xls"
+  s.summary = %q{to_xls for Enumerations}
   s.description = %q{Adds a to_xls method to all enumerations, which can be used to generate excel files conveniently. Can rely on ActiveRecord sugar for obtaining attribute names.}
 
   s.rubyforge_project = "to_xls"
@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency "spreadsheet"
   s.add_development_dependency "spreadsheet"
-  s.add_development_dependency "rspec", "~> 2.3.0"
-  s.add_development_dependency "bundler", "> 1.1.0"
+  s.add_development_dependency "rspec", "~> 2.11.0"
+  s.add_development_dependency "bundler", "~> 1.1.0"
   s.add_development_dependency "rake", "~> 0.9.2"
 end
