@@ -21,7 +21,12 @@ This gem includes a simplified way to change the format of the cells. Also this 
 
 To change the format of the cells, headers and columns the code should be like this:
 
-      User.all.to_xls :cell_format => {:color => :blue}, :header_format => {:weight => :bold, :color => :red}, :column_format => {[:created_at, :updated_at] => {:number_format => 'DD/MM/YYYY'}}, :column_width => {[:created_at, :updated_at] => 12}
+      User.all.to_xls :cell_format => {:color => :blue}, 
+        :header_format => {:weight => :bold, :color => :red}, 
+        :column_format => {[:created_at, :updated_at] => {:number_format => 'DD/MM/YYYY'}}, 
+        :column_width => {[:created_at, :updated_at] => 12}
+
+Check the {wiki}[https://github.com/LogicalBricks/to_xls/wiki/Additional-options] for a more detailed example using column_format an column_width
 
 To have a full list of the format admited for the cells and headers you may have a look {on the source code of spreadsheet gem}[http://scm.ywesee.com/?p=spreadsheet/.git;a=blob;f=lib/spreadsheet/format.rb;h=ceef6bb6618238d1ff5cc0462826e2c127c272f1;hb=HEAD]. This gem runs under to_xls, so the format supported by this gem are the ones of spreadsheet.
 
