@@ -99,8 +99,9 @@ further details.
 
 == Changelog
 
-1.5.0
+1.5.1
 
 * to_xls now extends Enumerable instead of Array
 * Included :cell_format and :header_format options
+* Included :column_format and :column_width options
 * Used bundler instead of jeweller
