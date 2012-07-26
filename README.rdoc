@@ -4,6 +4,8 @@ This gem transform an Enumeration (i.e. an Array) into an excel file using the s
 
 It is (very slightly) oriented towards exporting ActiveRecord sets, but it can be used outside of Rails as well.
 
+This project is a fork of [https://github.com/splendeo/to_xls]. It adds the possibility of specify the column format and column width.
+
 == Usage
 
   @users = User.all
