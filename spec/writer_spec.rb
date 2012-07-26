@@ -158,41 +158,61 @@ describe ToXls::Writer do
     end
   end
 
-  describe "formats" do
-    it "accepts the format options" do
-      cell_format = {:color => :blue} 
-      header_format = {:weight => :bold, :color => :red}
-      xls = make_book( mock_users,
-        :cell_format => cell_format,
-        :header_format => header_format
+  context 'formats' do
+    before :each do
+      @cell_format   = { :color => :blue }
+      @header_format = { :weight => :bold, :color => :red }
+      @column_width  = { :age => 4, [:email, :name, :other] => 20 }
+      @column_format = { :age => { :number_format => '0.00' }, 
+                        [:email, :name, :other] => { :rotation => 90 } }
+
+      @xls = make_book(
+        mock_users,
+        :columns       => [:name, :age, :email],
+        :cell_format   => @cell_format,
+        :header_format => @header_format,
+        :column_format => @column_format,
+        :column_width  => @column_width
       )
-      check_format( xls.worksheets.first, header_format, cell_format )
     end
 
-    it "accepts the format options with column format" do
-      cell_format = {:color => :blue} 
-      header_format = {:weight => :bold, :color => :red}
-      column_format = {:age => {:number_format => '0.00'}, 
-	      [:email, :name, :other] => {:rotation => 90}}
-      writer = make_writer( mock_users,
-        :cell_format => cell_format,
-        :header_format => header_format,
-        :column_format => column_format
-      )
-      check_format_with_column_options(writer, header_format, cell_format, column_format)
+    it 'adds header format options to default header format' do
+      default_header_format = @xls.worksheets.first.rows[0].default_format
+      @header_format.each do |key, value|
+        default_header_format.font.send(key).should == value
+      end
     end
 
-    it "accepts the format options with column width" do
-      cell_format = {:color => :blue} 
-      header_format = {:weight => :bold, :color => :red}
-      column_width = {:age => 4, 
-	      [:email, :name, :other] => 20}
-      writer = make_writer( mock_users,
-        :cell_format => cell_format,
-        :header_format => header_format,
-        :column_width => column_width
-      )
-      check_format_with_column_width(writer, header_format, cell_format, column_width)
+    it 'adds cell format options to default cell format' do
+      default_cell_format = @xls.worksheets.first.rows[1].default_format
+      @cell_format.each do |key, value|
+        default_cell_format.font.send(key).should == value
+      end
+    end
+
+    it 'adds column format options to default column format' do
+      name_column  = 0
+      age_column   = 1
+      email_column = 2
+
+      default_column_format = @xls.worksheets.first.columns[age_column].default_format
+      default_column_format.number_format.should == '0.00'
+
+      default_column_format = @xls.worksheets.first.columns[email_column].default_format
+      default_column_format.rotation.should == 90
+
+      default_column_format = @xls.worksheets.first.columns[name_column].default_format
+      default_column_format.rotation.should == 90
+    end
+
+    it 'accepts column width option' do
+      name_column  = 0
+      age_column   = 1
+      email_column = 2
+
+      @xls.worksheets.first.columns[age_column].width.should == 4
+      @xls.worksheets.first.columns[email_column].width.should == 20
+      @xls.worksheets.first.columns[name_column].width.should == 20
     end
   end
 end

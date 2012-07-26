@@ -6,12 +6,12 @@ module ToXls
 
   class Writer
     def initialize(array, options = {})
-      @array = array
-      @options = options
-      @cell_format = create_format :cell_format
+      @array         = array
+      @options       = options
+      @cell_format   = create_format :cell_format
       @header_format = create_format :header_format
       @column_format = (@options.delete :column_format) || {}
-      @column_width = (@options.delete :column_width) || {}
+      @column_width  = (@options.delete :column_width) || {}
     end
 
     def write_string(string = '')
@@ -53,25 +53,27 @@ module ToXls
 
         @column_format.each_pair do |column_names, options|
           next unless column_names
-          column_names = [column_names] unless column_names.is_a?(Array)
-          column_numbers = column_names.map{ |c| columns.index(c) }.compact
-          column_numbers.each{ |column_number| apply_format_to_columns(sheet.column(column_number), options) }
+          column_numbers = [*column_names].map { |c| columns.index(c) }.compact
+          column_numbers.each do |column_number|
+            apply_format_to_column(sheet.column(column_number), options)
+          end
         end
 
         @column_width.each_pair do |column_names, width|
           next unless column_names
-          column_names = [column_names] unless column_names.is_a?(Array)
-          column_numbers = column_names.map{ |c| columns.index(c) }.compact
-          column_numbers.each{ |column_number| apply_width_to_columns(sheet.column(column_number), width) }
+          column_numbers = [*column_names].map { |c| columns.index(c) }.compact
+          column_numbers.each do |column_number|
+            apply_width_to_column(sheet.column(column_number), width)
+          end
         end
       end
     end
 
     def columns
-      return  @columns if @columns
+      return @columns if @columns
       @columns = @options[:columns]
       raise ArgumentError.new(":columns (#{columns}) must be an array or nil") unless (@columns.nil? || @columns.is_a?(Array))
-      @columns ||=  can_get_columns_from_first_element? ? get_columns_from_first_element : []
+      @columns ||= can_get_columns_from_first_element? ? get_columns_from_first_element : []
     end
 
     def can_get_columns_from_first_element?
@@ -102,11 +104,11 @@ module ToXls
       row.default_format = format if format
     end
 
-    def apply_format_to_columns(column, hash)
+    def apply_format_to_column(column, hash)
       column.default_format = Spreadsheet::Format.new(hash) if hash
     end
 
-    def apply_width_to_columns(column, width)
+    def apply_width_to_column(column, width)
       column.width = width if width
     end
 
