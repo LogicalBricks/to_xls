@@ -2,43 +2,42 @@ module ToXls
 
   # Converts a hash with arrays keys to a hash with single (not arrays) keys, 
   # separating and merging the values correctly. If a key :all is specified, 
-  # its value is merged into all other values when hashes, or it overwrites all
-  # other values otherwise.
+  # its value is merged into all other values when hashes.
   #
   # Example 1:
   #
   #     {
   #       [:a, :b] => {:c => :d}, 
-  #       :e => {:f => :g}, 
-  #       :all => {:h => :i}
-  #       :b => {:j => :k}
+  #       :e       => {:f => :g}, 
+  #       :b       => {:h => :i},
+  #       :all     => {:j => :k}
   #     }
   #
   # is converted to
   #
   #     {
-  #       :a => {:c => d, :j => :k},
-  #       :b => {:c => :d, :h => :i, :j => :k}, 
-  #       :e => {:f => :g, :h => :i},
-  #       :all => {:h => :i}
+  #       :a   => {:c => d, :j => :k},
+  #       :b   => {:j => :k, :c => :d, :h => :i}, 
+  #       :e   => {:h => :i, :f => :g},
+  #       :all => {:j => :k}
   #     }
   #
   # Example 2:
   #
   #     {
   #       [:a, :b] => :c, 
-  #       :d => :e, 
-  #       :all => :f
-  #       :b => :g
+  #       :d       => :e, 
+  #       :b       => :f,
+  #       :all     => :g
   #     }
   #
   # is converted to
   #
   #     {
-  #       :a => :c,
-  #       :b => :c, 
-  #       :d => :e,
-  #       :all => :f
+  #       :a  => :c,
+  #       :b  => :f, 
+  #       :d  => :e,
+  #       :all => :g
   #     }
   #
   class HashSimplifier

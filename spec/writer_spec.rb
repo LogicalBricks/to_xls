@@ -162,7 +162,7 @@ describe ToXls::Writer do
     before :each do
       @cell_format   = { :color => :blue }
       @header_format = { :weight => :bold, :color => :red }
-      @column_width  = { :age => 4, [:email, :name, :other] => 20 }
+      @column_width  = { :age => 4, [:name, :other] => 20, :all => 10 }
       @column_format = { :age => { :number_format => '0.00' }, 
                         [:email, :name, :other] => { :rotation => 90 },
                         :all => {:horizontal_align => :center} }
@@ -215,8 +215,10 @@ describe ToXls::Writer do
       email_column = 2
 
       @xls.worksheets.first.columns[age_column].width.should == 4
-      @xls.worksheets.first.columns[email_column].width.should == 20
+      @xls.worksheets.first.columns[email_column].width.should == 10
       @xls.worksheets.first.columns[name_column].width.should == 20
     end
+
   end
+
 end
