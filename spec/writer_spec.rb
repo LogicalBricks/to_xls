@@ -164,7 +164,8 @@ describe ToXls::Writer do
       @header_format = { :weight => :bold, :color => :red }
       @column_width  = { :age => 4, [:email, :name, :other] => 20 }
       @column_format = { :age => { :number_format => '0.00' }, 
-                        [:email, :name, :other] => { :rotation => 90 } }
+                        [:email, :name, :other] => { :rotation => 90 },
+                        :all => {:horizontal_align => :center} }
 
       @xls = make_book(
         mock_users,
@@ -197,12 +198,15 @@ describe ToXls::Writer do
 
       default_column_format = @xls.worksheets.first.columns[age_column].default_format
       default_column_format.number_format.should == '0.00'
+      default_column_format.horizontal_align.should == :center
 
       default_column_format = @xls.worksheets.first.columns[email_column].default_format
       default_column_format.rotation.should == 90
+      default_column_format.horizontal_align.should == :center
 
       default_column_format = @xls.worksheets.first.columns[name_column].default_format
       default_column_format.rotation.should == 90
+      default_column_format.horizontal_align.should == :center
     end
 
     it 'accepts column width option' do

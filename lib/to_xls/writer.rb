@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'stringio'
 require 'spreadsheet'
+require 'to_xls/util/hash_simplifier.rb'
 
 module ToXls
 
@@ -51,19 +52,31 @@ module ToXls
           row_index += 1
         end
 
-        @column_format.each_pair do |column_names, options|
-          next unless column_names
-          column_numbers = [*column_names].map { |c| columns.index(c) }.compact
-          column_numbers.each do |column_number|
-            apply_format_to_column(sheet.column(column_number), options)
+        sfh = simplified_format_hash
+        value_for_all = sfh.delete :all
+        if value_for_all
+          column_numbers(:all).each do |column_number|
+            apply_format_to_column(sheet.column(column_number), value_for_all)
           end
         end
 
-        @column_width.each_pair do |column_names, width|
-          next unless column_names
-          column_numbers = [*column_names].map { |c| columns.index(c) }.compact
-          column_numbers.each do |column_number|
-            apply_width_to_column(sheet.column(column_number), width)
+        sfh.each_pair do |column_name, options|
+          column_numbers(column_name).each do |column_number|
+            apply_format_to_column(sheet.column(column_number), options) if column_number
+          end
+        end
+
+        swh = simplified_width_hash
+        value_for_all = swh.delete :all
+        if value_for_all
+          column_numbers(:all).each do |column_number|
+            apply_width_to_column(sheet.column(column_number), value_for_all)
+          end
+        end
+
+        swh.each_pair do |column_name, width|
+          column_numbers(column_name).each do |column_number|
+            apply_width_to_column(sheet.column(column_number), width) if column_number
           end
         end
       end
@@ -127,6 +140,22 @@ module ToXls
       else
         raise ArgumentError, "column #{column} has an invalid class (#{ column.class })"
       end
+    end
+
+    def column_numbers column_names
+      if column_names == :all
+        (0...columns.size).to_a
+      else
+        [*column_names].collect{|c| columns.index c }.compact
+      end
+    end
+
+    def simplified_format_hash
+      HashSimplifier.new(@column_format).simple
+    end
+
+    def simplified_width_hash
+      HashSimplifier.new(@column_width).simple
     end
 
   end
