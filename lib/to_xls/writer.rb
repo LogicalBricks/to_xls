@@ -53,31 +53,19 @@ module ToXls
         end
 
         sfh = simplified_format_hash
-        value_for_all = sfh.delete :all
-        if value_for_all
-          column_numbers(:all).each do |column_number|
-            apply_format_to_column(sheet.column(column_number), value_for_all)
-          end
-        end
+        apply_format_to_all_columns(sheet, sfh.delete(:all))
 
         sfh.each_pair do |column_name, options|
-          column_numbers(column_name).each do |column_number|
-            apply_format_to_column(sheet.column(column_number), options) if column_number
-          end
+          column_number = columns.index(column_name)
+          apply_format_to_column(sheet.column(column_number), options) if column_number
         end
 
         swh = simplified_width_hash
-        value_for_all = swh.delete :all
-        if value_for_all
-          column_numbers(:all).each do |column_number|
-            apply_width_to_column(sheet.column(column_number), value_for_all)
-          end
-        end
+        apply_width_to_all_columns(sheet, swh.delete(:all))
 
         swh.each_pair do |column_name, width|
-          column_numbers(column_name).each do |column_number|
-            apply_width_to_column(sheet.column(column_number), width) if column_number
-          end
+          column_number = columns.index(column_name)
+          apply_width_to_column(sheet.column(column_number), width) if column_number
         end
       end
     end
@@ -121,8 +109,24 @@ module ToXls
       column.default_format = Spreadsheet::Format.new(hash) if hash
     end
 
+    def apply_format_to_all_columns(sheet, value_for_all)
+      if value_for_all
+        (0...columns.size).each do |column_number|
+          apply_format_to_column(sheet.column(column_number), value_for_all)
+        end
+      end
+    end
+
     def apply_width_to_column(column, width)
       column.width = width if width
+    end
+
+    def apply_width_to_all_columns(sheet, value_for_all)
+      if value_for_all
+        (0...columns.size).each do |column_number|
+          apply_width_to_column(sheet.column(column_number), value_for_all)
+        end
+      end
     end
 
     def create_format(name)
