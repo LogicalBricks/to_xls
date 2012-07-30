@@ -23,8 +23,7 @@ This gem includes a simplified way to change the format of the cells. Also this 
 
 To change the format of the cells, headers and columns the code should be like this:
 
-      User.all.to_xls :cell_format => {:color => :blue}, 
-        :header_format => {:weight => :bold, :color => :red}, 
+      User.all.to_xls :header_format => {:weight => :bold, :color => :red}, 
         :column_format => {[:created_at, :updated_at] => {:number_format => 'DD/MM/YYYY'}}, 
         :column_width => {[:created_at, :updated_at] => 12}
 
