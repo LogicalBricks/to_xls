@@ -51,19 +51,8 @@ module ToXls
           row_index += 1
         end
 
-        apply_format_to_all_columns(sheet, column_format_hash.delete(:all))
-
-        column_format_hash.each_pair do |column_name, options|
-          column_number = columns.index(column_name)
-          apply_format_to_column(sheet.column(column_number), options) if column_number
-        end
-
-        apply_width_to_all_columns(sheet, column_width_hash.delete(:all))
-
-        column_width_hash.each_pair do |column_name, width|
-          column_number = columns.index(column_name)
-          apply_width_to_column(sheet.column(column_number), width) if column_number
-        end
+        add_format_to_columns(sheet)
+        add_width_to_columns(sheet)
       end
     end
 
@@ -96,7 +85,25 @@ module ToXls
       @options[:headers] != false
     end
 
-    private
+  private
+
+    def add_format_to_columns(sheet)
+      apply_format_to_all_columns(sheet, column_format_hash.delete(:all))
+
+      column_format_hash.each_pair do |column_name, options|
+        column_number = columns.index(column_name)
+        apply_format_to_column(sheet.column(column_number), options) if column_number
+      end
+    end
+
+    def add_width_to_columns(sheet)
+      apply_width_to_all_columns(sheet, column_width_hash.delete(:all))
+
+      column_width_hash.each_pair do |column_name, width|
+        column_number = columns.index(column_name)
+        apply_width_to_column(sheet.column(column_number), width) if column_number
+      end
+    end
 
     def apply_format_to_row(row, format)
       row.default_format = format if format
