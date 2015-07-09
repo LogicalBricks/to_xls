@@ -1,4 +1,4 @@
-require 'to_xls/util/hash_merger'
+require_relative 'util/hash_merger'
 
 module ToXls
   class SheetWriter
@@ -16,10 +16,10 @@ module ToXls
 
     def write
       if columns.any?
-        add_format_to_headers(sheet)
-        add_format_to_rows(sheet)
-        add_format_to_columns(sheet)
-        add_width_to_columns(sheet)
+        add_format_to_headers
+        add_format_to_rows
+        add_format_to_columns
+        add_width_to_columns
       end
     end
 
@@ -54,14 +54,14 @@ module ToXls
 
   private
 
-    def add_format_to_headers(sheet)
+    def add_format_to_headers
       if headers_should_be_included?
         apply_format_to_row(sheet.row(0), @header_format)
         fill_row(sheet.row(0), headers)
       end
     end
 
-    def add_format_to_rows(sheet)
+    def add_format_to_rows
       @array.each_with_index do |model, index|
         row = sheet.row(index + base_index)
         apply_format_to_row(row, @cell_format)
@@ -69,8 +69,8 @@ module ToXls
       end
     end
 
-    def add_format_to_columns(sheet)
-      apply_format_to_all_columns(sheet, column_format_hash.delete(:all))
+    def add_format_to_columns
+      apply_format_to_all_columns(column_format_hash.delete(:all))
 
       column_format_hash.each_pair do |column_name, options|
         column_number = columns.index(column_name)
@@ -78,8 +78,8 @@ module ToXls
       end
     end
 
-    def add_width_to_columns(sheet)
-      apply_width_to_all_columns(sheet, column_width_hash.delete(:all))
+    def add_width_to_columns
+      apply_width_to_all_columns(column_width_hash.delete(:all))
 
       column_width_hash.each_pair do |column_name, width|
         column_number = columns.index(column_name)
@@ -99,7 +99,7 @@ module ToXls
       column.default_format = Spreadsheet::Format.new(hash) if hash
     end
 
-    def apply_format_to_all_columns(sheet, value_for_all)
+    def apply_format_to_all_columns(value_for_all)
       if value_for_all
         (0...columns.size).each do |column_number|
           apply_format_to_column(sheet.column(column_number), value_for_all)
@@ -111,7 +111,7 @@ module ToXls
       column.width = width if width
     end
 
-    def apply_width_to_all_columns(sheet, value_for_all)
+    def apply_width_to_all_columns(value_for_all)
       if value_for_all
         (0...columns.size).each do |column_number|
           apply_width_to_column(sheet.column(column_number), value_for_all)
