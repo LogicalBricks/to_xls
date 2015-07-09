@@ -20,8 +20,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_runtime_dependency "spreadsheet"
-  s.add_development_dependency "spreadsheet"
-  s.add_development_dependency "rspec", "~> 2.3.0"
-  s.add_development_dependency "bundler", "> 1.1.0"
-  s.add_development_dependency "rake", "~> 0.9.2"
+  s.add_development_dependency "rspec", "~> 2.11"
+  s.add_development_dependency "bundler"
+  s.add_development_dependency "rake"
 end
