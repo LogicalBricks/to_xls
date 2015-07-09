@@ -36,21 +36,8 @@ module ToXls
 
     def write_sheet(sheet)
       if columns.any?
-        row_index = 0
-
-        if headers_should_be_included?
-          apply_format_to_row(sheet.row(0), @header_format)
-          fill_row(sheet.row(0), headers)
-          row_index = 1
-        end
-
-        @array.each do |model|
-          row = sheet.row(row_index)
-          apply_format_to_row(row, @cell_format)
-          fill_row(row, columns, model)
-          row_index += 1
-        end
-
+        add_format_to_headers(sheet)
+        add_format_to_rows(sheet)
         add_format_to_columns(sheet)
         add_width_to_columns(sheet)
       end
@@ -87,6 +74,21 @@ module ToXls
 
   private
 
+    def add_format_to_headers(sheet)
+      if headers_should_be_included?
+        apply_format_to_row(sheet.row(0), @header_format)
+        fill_row(sheet.row(0), headers)
+      end
+    end
+
+    def add_format_to_rows(sheet)
+      @array.each_with_index do |model, index|
+        row = sheet.row(index + base_index)
+        apply_format_to_row(row, @cell_format)
+        fill_row(row, columns, model)
+      end
+    end
+
     def add_format_to_columns(sheet)
       apply_format_to_all_columns(sheet, column_format_hash.delete(:all))
 
@@ -103,6 +105,10 @@ module ToXls
         column_number = columns.index(column_name)
         apply_width_to_column(sheet.column(column_number), width) if column_number
       end
+    end
+
+    def base_index
+      headers_should_be_included? ? 1 : 0
     end
 
     def apply_format_to_row(row, format)
