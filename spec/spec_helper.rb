@@ -6,7 +6,7 @@ require 'to_xls'
 
 def mock_model(name, attributes)
   attributes[:attributes] = attributes.clone
-  mock(name, attributes)
+  double(name, attributes)
 end
 
 def mock_company(name, address)
@@ -15,7 +15,7 @@ end
 
 def mock_user(name, age, email, company)
   user = mock_model(name, :name => name, :age => age, :email => email)
-  user.stub!(:company).and_return(company)
+  user.stub(:company).and_return(company)
   user
 end
 
